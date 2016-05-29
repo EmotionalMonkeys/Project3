@@ -12,10 +12,10 @@
 	Connection conn = null;
 	try {
 		Class.forName("org.postgresql.Driver");
-    String url = "jdbc:postgresql:cse135";
-  	String admin = "postgres";
-  	String password = "";
-  	conn = DriverManager.getConnection(url, admin, password);
+	   String url = "jdbc:postgresql:cse135";
+	  	String admin = "postgres";
+	  	String password = "";
+  		conn = DriverManager.getConnection(url, admin, password);
 	}
 	catch (Exception e) {}
 	

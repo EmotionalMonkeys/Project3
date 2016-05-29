@@ -12,23 +12,33 @@
 <% 
 	Connection conn = null;
 	try {
-    Class.forName("org.postgresql.Driver");
-    String url = "jdbc:postgresql:cse135";
-    String admin = "postgres";
-    String password = "";
-    conn = DriverManager.getConnection(url, admin, password);
+	   Class.forName("org.postgresql.Driver");
+	   String url = "jdbc:postgresql:cse135";
+	   String admin = "postgres";
+	   String password = "";
+	   conn = DriverManager.getConnection(url, admin, password);
 	}
 	catch (Exception e) {}
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
 		String name = request.getParameter("name");
-    String role = request.getParameter("role");
-    int age = Integer.parseInt(request.getParameter("age"));
-    String state = request.getParameter("state");
-    
-    Statement stmt = conn.createStatement();
-    int result = stmt.executeUpdate(
-    		"INSERT INTO users (name,role,age,state) VALUES ('"+name+"', '"+role+"', '"+age+"', '"+state+"')");
-		if (result == 0) {out.println("<script>alert('sign up fail!');</script>");}
+	   String role = request.getParameter("role");
+	   int age = Integer.parseInt(request.getParameter("age"));
+	   String state = request.getParameter("state");
+	   int result = 0;
+	    
+	   Statement stmt = conn.createStatement();
+	   Statement stmt2 = conn.createStatement();
+	   ResultSet stateId = stmt2.executeQuery(
+	   	"select id from states where name = " + "\'" + state + "\'");
+		if(stateId.next()){
+			try{
+		   	result = stmt.executeUpdate(
+		    		"INSERT INTO users (name,role,age,state_id) VALUES ('"+name+"', '"+role+"', '"+age+"', '"+stateId.getString("id")+"')");
+		   }
+		   catch (Exception e) {
+		   }
+			if (result == 0) {out.println("<script>alert('sign up fail!');</script>");}
+		}
 	}
 %>
 
