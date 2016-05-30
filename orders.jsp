@@ -10,22 +10,28 @@
 </head>
 <%
 	Connection conn = null;
+	String categoryOption = "";
 	try {
-		Class.forName("org.postgresql.Driver");
-	   String url = "jdbc:postgresql:cse135";
+		  Class.forName("org.postgresql.Driver");
+	    String url = "jdbc:postgresql:cse135";
 	  	String admin = "postgres";
 	  	String password = "";
 
   		conn = DriverManager.getConnection(url, admin, password);
 	}
 	catch (Exception e) {}
+
 	Statement stmt = conn.createStatement();
-	String categoryOption = "";
-	ResultSet rs_categories = stmt.executeQuery("select name from categories");
+	Statement stmt2 = conn.createStatement();
+	
+	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
 
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
 	  if( request.getParameter("category_option") == null){
       categoryOption = (String)session.getAttribute("category_option");
+      if(categoryOption==null){
+	      session.setAttribute("category_option","all");
+	    }
     }
     else{
       categoryOption = request.getParameter("category_option");
@@ -77,10 +83,9 @@
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
       <option value = "all">All</option>
-      <%while(rs_categories.next()){
+      <%while(rs_categories != null && rs_categories.next()){
           String category = rs_categories.getString("name");
-          if(categoryOption != "" && 
-            categoryOption.equals(category)) {%>
+          if(categoryOption != "" && categoryOption.equals(category)) {%>
             <option selected value="<%=category%>"><%=category%></option>
           <%}
           else{%>
