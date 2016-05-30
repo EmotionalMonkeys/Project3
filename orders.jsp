@@ -15,22 +15,38 @@
 	   String url = "jdbc:postgresql:cse135";
 	  	String admin = "postgres";
 	  	String password = "";
+
   		conn = DriverManager.getConnection(url, admin, password);
 	}
 	catch (Exception e) {}
-	
+	Statement stmt = conn.createStatement();
+	String categoryOption = "";
+	ResultSet rs_categories = stmt.executeQuery("select name from categories");
+
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
+	  if( request.getParameter("category_option") == null){
+      categoryOption = (String)session.getAttribute("category_option");
+    }
+    else{
+      categoryOption = request.getParameter("category_option");
+      session.setAttribute("category_option", categoryOption);
+      
+    }
 		String action = request.getParameter("submit");
 		if (action.equals("insert")) {
 			int queries_num = Integer.parseInt(request.getParameter("queries_num"));
 			Random rand = new Random();
 			int random_num = rand.nextInt(1) + 30;
-			if (queries_num < random_num) random_num = queries_num;
-			Statement stmt = conn.createStatement();
+			if (queries_num < random_num) 
+				random_num = queries_num;
+			
 			stmt.executeQuery("SELECT proc_insert_orders(" + queries_num + "," + random_num + ")");
 			out.println("<script>alert('" + queries_num + " orders are inserted!');</script>");
 		}
 		else if (action.equals("refresh")) {
+			//Need to implement.
+		}
+		else if (action.equals("run")) {
 			//Need to implement.
 		}
 	}
@@ -48,14 +64,35 @@
 	</ul>
 </div>
 <div>
-<div><h1> Need to implement! Sales Analytics</h1></div>
 <form action="orders.jsp" method="POST">
 	<label># of queries to insert</label>
 	<input type="number" name="queries_num">
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
+
 <form action="orders.jsp" method="POST">
 	<input class="btn btn-success"  type="submit" name="submit" value="refresh"/>
 </form>
+
+<form action="orders.jsp" method="POST">
+	<select name = "category_option" >
+      <option value = "all">All</option>
+      <%while(rs_categories.next()){
+          String category = rs_categories.getString("name");
+          if(categoryOption != "" && 
+            categoryOption.equals(category)) {%>
+            <option selected value="<%=category%>"><%=category%></option>
+          <%}
+          else{%>
+            <option value="<%=category%>"><%=category%></option>
+          <%}
+        }%>
+    </select>
+	<input class="btn btn-success"  type="submit" name="submit" value="run"/>
+</form>
+
+
+
+
 </body>
 </html>
