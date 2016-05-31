@@ -23,6 +23,11 @@
 
 	Statement stmt = conn.createStatement();
 	Statement stmt2 = conn.createStatement();
+	Statement stmt3 = conn.createStatement();
+
+	ResultSet rs_top50_products = null;
+	ResultSet rs_top50_states = null;
+	PreparedStatement cell_amount = null;
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
 
@@ -53,8 +58,24 @@
 			//Need to implement.
 		}
 		else if (action.equals("run")) {
-			//Need to implement.
-		}
+			rs_top50_products = stmt3.executeQuery(
+				"select p.id, p.name, u.amount from (" +
+				"select product_id, round(cast(sum(amount) as numeric), 2) as amount " +
+				"from state_product " +
+				"group by product_id " +
+				"order by amount DESC limit 50) u join " +
+				"products p on u.product_id = p.id order by u.amount;");
+
+			rs_top50_states = stmt.executeQuery(
+				"select s.name, u.amount from ("+
+				"select state_id, round(cast(sum(amount) as numeric), 2)  as amount "+
+				"from state_product "+
+				"group by state_id order by amount DESC) u join states s "+ 
+				"on u.state_id = s.id order by u.amount DESC;");
+
+			cell_amount = conn.prepareStatement(
+		        "select s.name, round(cast(sum(o.price) as numeric),2) as amount from states s, users u left outer join orders o on o.user_id = u.id where o.product_id = ? and s.name = ? and o.is_cart = false group by s.name ;"); 
+    		}
 	}
 	
 %>
@@ -95,6 +116,49 @@
     </select>
 	<input class="btn btn-success"  type="submit" name="submit" value="run"/>
 </form>
+
+<table class="table table-striped"><%
+	if(rs_top50_products != null && rs_top50_states != null && cell_amount != null){
+    String displayOption = ("State | Product");%>
+    <th><%= displayOption %></th>
+    <%
+      ArrayList productList = new ArrayList(); 
+      
+      while(rs_top50_products != null && rs_top50_products.next()){
+        String productSpending = 
+            ((rs_top50_products.getString("amount") == null) ? "0" : 
+            rs_top50_products.getString("amount"));
+        %>
+        <th><%=rs_top50_products.getString("name") + " (" + productSpending + ")"%></th>
+        <%productList.add(rs_top50_products.getString("id"));   
+      }
+      ResultSet salesAmount = null;
+      while(rs_top50_states != null && rs_top50_states.next()){%>
+        <tr>
+          <%String amount = 
+            ((rs_top50_states.getString("amount") == null) ? "0" : 
+            rs_top50_states.getString("amount"));%>
+          <td><b><%=rs_top50_states.getString("name")+ " ("+
+            amount+")"%></b></td>
+
+        <%for(int counter = 0; counter < productList.size(); counter++){
+            cell_amount.setInt(1, Integer.valueOf((String)productList.get(counter)));
+            cell_amount.setString(2, rs_top50_states.getString("name"));
+            salesAmount = cell_amount.executeQuery();
+            if (salesAmount!= null && salesAmount.next()){ %>
+              <td><%= "$ " + salesAmount.getString("amount") %></td>
+              <%
+            }
+            else {%>
+              <td><%= "$ 0 "%></td>
+              <%
+            }
+          }
+          %></tr><%
+      }
+    }
+ %>
+</table>
 
 
 
