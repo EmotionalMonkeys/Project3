@@ -36,28 +36,31 @@
 	ResultSet rs_numOrders = stmt3.executeQuery("select count(*) from orders");
 
 	int numOfOrders = 0;
+
+	/* =========================== Get added sales ============================== */
 	//get number of orders
 	if(rs_numOrders.next()){
 		numOfOrders = Integer.parseInt(rs_numOrders.getString("count"));
 	}
 
 	//get number of orders since last refresh/run
-	String total_orders = (String)application.getAttribute("total_orders");
+	String orig_orders = (String)application.getAttribute("orig_orders");
 
 	//first time accessing the website
-	if(total_orders==null){
-		application.setAttribute("total_orders",new Integer(numOfOrders).toString());
+	if(orig_orders==null){
+		application.setAttribute("orig_orders",new Integer(numOfOrders).toString());
 	}
 	//new sales added
-	else if(numOfOrders > Integer.parseInt(total_orders)) {
+	else if(numOfOrders > Integer.parseInt(orig_orders)) {
 		ResultSet added_sale = 
-		stmt4.executeQuery("select * from orders offset "+Integer.parseInt(total_orders)+";");
+		stmt4.executeQuery("select * from orders offset "+Integer.parseInt(orig_orders)+";");
 
 		while(added_sale.next()){
 			//stmt4.executeQuery("insert into added_sale values()");
 			
 		}
 	}
+	/* =========================== Category Option ============================== */
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
 	  if( request.getParameter("category_option") == null){
       categoryOption = (String)session.getAttribute("category_option");
@@ -106,11 +109,9 @@
 				"on u.state_id = s.id order by u.amount DESC;");
 
 			cell_amount = conn.prepareStatement(
-		    "select amount from state_product where state_id=? and product_id=?"); 
+		    "select coalesce(round(cast(sum(amount) as numeric), 2),0)  as amount from state_product where product_id=? and state_id=?"); 
     }
-
 	}
-	
 %>
 
 <body>
