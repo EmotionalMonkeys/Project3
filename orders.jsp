@@ -92,14 +92,27 @@
 		}
 		/* =========================== Run ============================== */
 		else if (action.equals("run")) {
-
-			rs_top50_products = stmt3.executeQuery(
+			if(categoryOption.equals("all")){
+				rs_top50_products = stmt3.executeQuery(
 				"select p.id, p.name, u.amount from (" +
 				"select product_id, round(cast(sum(amount) as numeric), 2) as amount " +
 				"from state_product " +
 				"group by product_id " +
+				"order by amount DESC limit 50)u join " +
+				"products p on u.product_id = p.id order by u.amount;");
+			}
+			else{
+				rs_top50_products = stmt3.executeQuery(
+				"select p.id, p.name, u.amount from (" +
+				"select product_id, round(cast(sum(amount) as numeric), 2) as amount " +
+				"from state_product " +
+				"where product_id in (select id from products where "+
+				"category_id =(select id from categories where name ="+
+				"\'" +categoryOption + "\'"+ ")) "+
+				"group by product_id " +
 				"order by amount DESC limit 50) u join " +
 				"products p on u.product_id = p.id order by u.amount;");
+			}
 
 			rs_top50_states = stmt.executeQuery(
 				"select s.name, s.id,u.amount from ("+
