@@ -11,6 +11,9 @@
 <%
 	Connection conn = null;
 	String categoryOption = "";
+	
+
+
 	try {
 		  Class.forName("org.postgresql.Driver");
 	    String url = "jdbc:postgresql:cse135";
@@ -23,26 +26,54 @@
 
 	Statement stmt = conn.createStatement();
 	Statement stmt2 = conn.createStatement();
+	Statement stmt3 = conn.createStatement();
+	Statement stmt4 = conn.createStatement();
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
+	ResultSet rs_numOrders = stmt3.executeQuery("select count(*) from orders");
+
+	int numOfOrders = 0;
+	//get number of orders
+	if(rs_numOrders.next()){
+		numOfOrders = Integer.parseInt(rs_numOrders.getString("count"));
+	}
+
+	//get number of orders since last refresh/run
+	String total_orders = (String)application.getAttribute("total_orders");
+
+	//first time accessing the website
+	if(total_orders==null){
+		application.setAttribute("total_orders",new Integer(numOfOrders).toString());
+	}
+	//new sales added
+	else if(numOfOrders > Integer.parseInt(total_orders)) {
+		ResultSet added_sale = 
+		stmt4.executeQuery("select * from orders offset "+Integer.parseInt(total_orders)+";");
+
+		while(added_sale.next()){
+			//stmt4.executeQuery("insert into added_sale values()");
+			%>
+			<p><%=added_sale.getString("product_id")%></p>
+		<%}
+	}
 
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
 	  if( request.getParameter("category_option") == null){
       categoryOption = (String)session.getAttribute("category_option");
       if(categoryOption==null){
 	      session.setAttribute("category_option","all");
+	      categoryOption = "all";
 	    }
     }
     else{
       categoryOption = request.getParameter("category_option");
       session.setAttribute("category_option", categoryOption);
-      
     }
 		String action = request.getParameter("submit");
 		if (action.equals("insert")) {
 			int queries_num = Integer.parseInt(request.getParameter("queries_num"));
 			Random rand = new Random();
-			int random_num = rand.nextInt(1) + 30;
+			int random_num = rand.nextInt(30) + 1;
 			if (queries_num < random_num) 
 				random_num = queries_num;
 			
@@ -53,7 +84,7 @@
 			//Need to implement.
 		}
 		else if (action.equals("run")) {
-			//Need to implement.
+			
 		}
 	}
 	
