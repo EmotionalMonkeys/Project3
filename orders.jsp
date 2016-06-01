@@ -37,7 +37,7 @@
 
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
-	
+	out.print("sdsd");
 
 	int numOfOrders = 0;
 

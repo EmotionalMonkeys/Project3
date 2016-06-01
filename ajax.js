@@ -7,8 +7,6 @@ function refresh(){
 }
 function stateChanged(){
   if (xmlHttp.readyState==4) {
-      var xmlDoc=xmlHttp.responseXML.documentElement;
-       document.getElementById("testing").innerHTML =
-       "success";
+      document.getElementById("testing").innerHTML = xmlHttp.responseText;
   }
 }
