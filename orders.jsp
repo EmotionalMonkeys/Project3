@@ -6,7 +6,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<script language="javascript" src="ajax.js"></script> 
 <title>CSE135 Project</title>
+
 </head>
 <%
 	Connection conn = null;
@@ -145,11 +147,6 @@
 	}%>
 
 <body>
-<script>
-	function refresh(){
-		
-	}
-</script>
 <div class="collapse navbar-collapse">
 	<ul class="nav navbar-nav">
 		<li><a href="index.jsp">Home</a></li>
@@ -166,7 +163,8 @@
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
 
-<button onClick = "refresh();">Refresh</button>
+<button onclick = "refresh()">Refresh</button>
+<p id = "testing"></p>
 
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
@@ -223,7 +221,6 @@
     }
  %>
 </table>
-
 
 </body>
 </html>
