@@ -26,6 +26,7 @@
 	Statement stmt2 = conn.createStatement();
 	Statement stmt3 = conn.createStatement();
 	Statement stmt4 = conn.createStatement();
+	Statement stmt5 = conn.createStatement();
 
 	ResultSet rs_top50_products = null;
 	ResultSet rs_top50_states = null;
@@ -34,33 +35,10 @@
 
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
-	ResultSet rs_numOrders = stmt3.executeQuery("select count(*) from orders");
+	ResultSet rs_numOrders = stmt5.executeQuery("select max(id) from orders");
 
 	int numOfOrders = 0;
 
-	/* =========================== Get added sales ============================== */
-	//get number of orders
-	if(rs_numOrders.next()){
-		numOfOrders = Integer.parseInt(rs_numOrders.getString("count"));
-	}
-
-	//get number of orders since last refresh/run
-	String orig_orders = (String)application.getAttribute("orig_orders");
-
-	//first time accessing the website
-	if(orig_orders==null){
-		application.setAttribute("orig_orders",new Integer(numOfOrders).toString());
-	}
-	//new sales added
-	else if(numOfOrders > Integer.parseInt(orig_orders)) {
-		ResultSet added_sale = 
-		stmt4.executeQuery("select * from orders offset "+Integer.parseInt(orig_orders)+";");
-
-		while(added_sale.next()){
-			//stmt4.executeQuery("insert into added_sale values()");
-			
-		}
-	}
 	/* =========================== Category Option ============================== */
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
 	  if( request.getParameter("category_option") == null){
@@ -86,10 +64,6 @@
 			
 			stmt.executeQuery("SELECT proc_insert_orders(" + queries_num + "," + random_num + ")");
 			out.println("<script>alert('" + queries_num + " orders are inserted!');</script>");
-		}
-		/* =========================== Refresh ============================== */
-		else if (action.equals("refresh")) {
-			//Need to implement.
 		}
 		/* =========================== Run ============================== */
 		else if (action.equals("run")) {
@@ -126,9 +100,47 @@
 		    "select coalesce(round(cast(sum(amount) as numeric), 2),0)  as amount from state_product where product_id=? and state_id=?"); 
     }
 	}
-%>
+/* =========================== Get added sales ============================== */
+	//get number of orders
+	if(rs_numOrders.next()){
+		numOfOrders = Integer.parseInt(rs_numOrders.getString("max"));
+	}
+
+	//get number of orders since last refresh/run
+	Integer orig_orders = (Integer)application.getAttribute("orig_orders");
+
+	//first time accessing the website
+	if(orig_orders==null){
+		application.setAttribute("orig_orders",numOfOrders);
+	}
+	//new sales added
+	else if(numOfOrders > orig_orders.intValue()) {
+		int offset = orig_orders.intValue();
+		ResultSet added_sale = 
+		stmt4.executeQuery(
+			"select state_id,product_id,round(cast(sum(o.price) as numeric),2) as amount "+ 
+			"from (select * from orders offset "+
+			offset+")o join users u on u.id = o.user_id "+ 
+			"join products p on p.id = o.product_id "+
+			"group by state_id, product_id "+
+			"order by state_id ASC, product_id;");
+
+		while(added_sale!=null&&added_sale.next()){
+			int state = added_sale.getInt("state_id");
+			int product = added_sale.getInt("product_id");
+			int amount = added_sale.getInt("amount");
+			stmt5.executeUpdate("insert into added_sale(state_id,product_id,amount) "+
+			"values("+state+","+product+","+amount+");");	
+		}
+		application.setAttribute("orig_orders",numOfOrders);
+	}%>
 
 <body>
+<script>
+	function refresh(){
+		
+	}
+</script>
 <div class="collapse navbar-collapse">
 	<ul class="nav navbar-nav">
 		<li><a href="index.jsp">Home</a></li>
@@ -144,6 +156,9 @@
 	<input type="number" name="queries_num">
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
+
+
+<button onClick = "refresh();">Refresh</button>
 
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
