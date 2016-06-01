@@ -164,6 +164,7 @@
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
 
+
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
       <option value = "all">All</option>
@@ -180,8 +181,9 @@
 	<input class="btn btn-success"  type="submit" name="submit" value="run"/>
 </form>
 
-<button class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
-<button class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
+<p id="testing"></p>
+<button type="button" class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
+<button type="button" class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
 
 <table class="table table-striped"><%
 	if(rs_top50_products != null && rs_top50_states != null && cell_amount != null){ %>
@@ -223,8 +225,7 @@
  %>
 </table>
 
-<button class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
-<button class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
-</form>
+<button type="button" class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
+<button type="button" class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
 </body>
 </html>

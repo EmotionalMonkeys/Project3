@@ -5,10 +5,8 @@ body{
 }
 
 .endRefresh{
-	top: 10;
-	right: 0;
+	right: -255%;
 	position: absolute;
-	overflow: scroll;
 }
 
 .refresh{
