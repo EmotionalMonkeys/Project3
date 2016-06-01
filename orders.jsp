@@ -7,7 +7,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="orders.css">
+<script language="javascript" src="ajax.js"></script> 
 <title>CSE135 Project</title>
+
 </head>
 <%
 	Connection conn = null;
@@ -146,11 +148,6 @@
 	}%>
 
 <body>
-<script>
-	function refresh(){
-		
-	}
-</script>
 <div class="collapse navbar-collapse">
 	<ul class="nav navbar-nav">
 		<li><a href="index.jsp">Home</a></li>
@@ -166,9 +163,6 @@
 	<input type="number" name="queries_num">
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
-
-
-<button onClick = "refresh();">Refresh</button>
 
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
@@ -186,12 +180,8 @@
 	<input class="btn btn-success"  type="submit" name="submit" value="run"/>
 </form>
 
-<form action="orders.jsp" method="POST">
-	<input class="btn btn-success refresh"  type="submit" name="submit" value="refresh"/>
-</form>
-<form action="orders.jsp" method="POST">
-	<input class="btn btn-success endRefresh"  type="submit" name="submit" value="refresh"/>
-</form>
+<button class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
+<button class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
 
 <table class="table table-striped"><%
 	if(rs_top50_products != null && rs_top50_states != null && cell_amount != null){ %>
@@ -233,11 +223,8 @@
  %>
 </table>
 
-<form action="orders.jsp" method="POST">
-	<input class="btn btn-success refresh"  type="submit" name="submit" value="refresh"/>
-</form>
-<form action="orders.jsp" method="POST">
-	<input class="btn btn-success endRefresh"  type="submit" name="submit" value="refresh"/>
+<button class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
+<button class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
 </form>
 </body>
 </html>
