@@ -26,6 +26,7 @@
 	Statement stmt3 = conn.createStatement();
 	Statement stmt4 = conn.createStatement();
 	Statement stmt5 = conn.createStatement();
+	Statement stmt6 = conn.createStatement();
 
 	ResultSet rs_top50_products = null;
 	ResultSet rs_top50_states = null;
@@ -34,7 +35,7 @@
 
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
-	ResultSet rs_numOrders = stmt5.executeQuery("select max(id) from orders");
+	
 
 	int numOfOrders = 0;
 
@@ -52,9 +53,13 @@
       session.setAttribute("category_option", categoryOption);
     }
     /* =========================== Insert Orders ============================== */
-
 		String action = request.getParameter("submit");
 		if (action.equals("insert")) {
+			ResultSet rs_numOrders = stmt5.executeQuery("select max(id) from orders");
+			//get number of orders before insertion
+			if(rs_numOrders.next()){
+				numOfOrders = Integer.parseInt(rs_numOrders.getString("max"));
+			}
 			int queries_num = Integer.parseInt(request.getParameter("queries_num"));
 			Random rand = new Random();
 			int random_num = rand.nextInt(30) + 1;
@@ -63,9 +68,48 @@
 			
 			stmt.executeQuery("SELECT proc_insert_orders(" + queries_num + "," + random_num + ")");
 			out.println("<script>alert('" + queries_num + " orders are inserted!');</script>");
+
+			ResultSet added_sale = 
+				stmt4.executeQuery(
+					"select state_id,product_id,round(cast(sum(o.price) as numeric),2) as amount "+ 
+					"from (select * from orders offset "+
+					numOfOrders+")o join users u on u.id = o.user_id "+ 
+					"join products p on p.id = o.product_id "+
+					"group by state_id, product_id "+
+					"order by state_id ASC, product_id;");
+
+			while(added_sale!=null&&added_sale.next()){
+				int state = added_sale.getInt("state_id");
+				int product = added_sale.getInt("product_id");
+				int amount = added_sale.getInt("amount");
+				stmt5.executeUpdate("insert into logTable(state_id,product_id,amount) "+
+				"values("+state+","+product+","+amount+");");		
+			}
+
 		}
 		/* =========================== Run ============================== */
 		else if (action.equals("run")) {
+			ResultSet logEntry = stmt5.executeQuery("select * from logTable");
+
+			while(logEntry.next()){
+				int state = logEntry.getInt("state_id");
+				int product = logEntry.getInt("product_id");
+				int amount = logEntry.getInt("amount");
+				
+				int result = 0;
+				result = stmt6.executeUpdate(
+					"update state_product set amount = amount + " + amount +
+					" where state_id = " + state + "and product_id = " + product +";"
+					);
+				if(result == 0){
+					stmt6.executeUpdate(
+						"insert into state_product(state_id,product_id,amount) values ("+
+						state+","+product+","+amount+");");
+				}
+			}
+
+			stmt5.executeUpdate("delete from logTable");
+
 			if(categoryOption.equals("all")){
 				rs_top50_products = stmt3.executeQuery(
 				"select p.id, p.name, u.amount from (" +
@@ -98,40 +142,6 @@
 			cell_amount = conn.prepareStatement(
 		    "select coalesce(round(cast(sum(amount) as numeric), 2),0)  as amount from state_product where product_id=? and state_id=?"); 
     }
-	}
-/* =========================== Get added sales ============================== */
-	//get number of orders
-	if(rs_numOrders.next()){
-		numOfOrders = Integer.parseInt(rs_numOrders.getString("max"));
-	}
-
-	//get number of orders since last refresh/run
-	Integer orig_orders = (Integer)application.getAttribute("orig_orders");
-
-	//first time accessing the website
-	if(orig_orders==null){
-		application.setAttribute("orig_orders",numOfOrders);
-	}
-	//new sales added
-	else if(numOfOrders > orig_orders.intValue()) {
-		int offset = orig_orders.intValue();
-		ResultSet added_sale = 
-		stmt4.executeQuery(
-			"select state_id,product_id,round(cast(sum(o.price) as numeric),2) as amount "+ 
-			"from (select * from orders offset "+
-			offset+")o join users u on u.id = o.user_id "+ 
-			"join products p on p.id = o.product_id "+
-			"group by state_id, product_id "+
-			"order by state_id ASC, product_id;");
-
-		while(added_sale!=null&&added_sale.next()){
-			int state = added_sale.getInt("state_id");
-			int product = added_sale.getInt("product_id");
-			int amount = added_sale.getInt("amount");
-			stmt5.executeUpdate("insert into added_sale(state_id,product_id,amount) "+
-			"values("+state+","+product+","+amount+");");	
-		}
-		application.setAttribute("orig_orders",numOfOrders);
 	}%>
 
 <body>
