@@ -6,6 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="orders.css">
 <title>CSE135 Project</title>
 </head>
 <%
@@ -145,10 +146,6 @@
 </form>
 
 <form action="orders.jsp" method="POST">
-	<input class="btn btn-success"  type="submit" name="submit" value="refresh"/>
-</form>
-
-<form action="orders.jsp" method="POST">
 	<select name = "category_option" >
       <option value = "all">All</option>
       <%while(rs_categories != null && rs_categories.next()){
@@ -162,6 +159,13 @@
         }%>
     </select>
 	<input class="btn btn-success"  type="submit" name="submit" value="run"/>
+</form>
+
+<form action="orders.jsp" method="POST">
+	<input class="btn btn-success refresh"  type="submit" name="submit" value="refresh"/>
+</form>
+<form action="orders.jsp" method="POST">
+	<input class="btn btn-success endRefresh"  type="submit" name="submit" value="refresh"/>
 </form>
 
 <table class="table table-striped"><%
@@ -204,6 +208,11 @@
  %>
 </table>
 
-
+<form action="orders.jsp" method="POST">
+	<input class="btn btn-success refresh"  type="submit" name="submit" value="refresh"/>
+</form>
+<form action="orders.jsp" method="POST">
+	<input class="btn btn-success endRefresh"  type="submit" name="submit" value="refresh"/>
+</form>
 </body>
 </html>

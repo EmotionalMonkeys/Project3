@@ -1,0 +1,17 @@
+body{
+	position: relative;
+	width: 100%;
+	overflow: scroll;
+}
+
+.endRefresh{
+	top: 10;
+	right: 0;
+	position: absolute;
+	overflow: scroll;
+}
+
+.refresh{
+	display: inline-block;
+	float: left;
+}
