@@ -16,6 +16,7 @@ Statement stmt = conn.createStatement();
 Statement stmt2 = conn.createStatement();
 Statement stmt3 = conn.createStatement();
 Statement stmt4 = conn.createStatement();
+Statement stmt5 = conn.createStatement();
 
 JSONObject change = new JSONObject();
 
@@ -99,7 +100,7 @@ else{
   "group by product_id "+
   "order by amount DESC limit 50)u;");
 }
-productGotIn50 = stmt3.executeQuery(
+productGotIn50 = stmt5.executeQuery(
 "select * from new50 "+
 "except select product_id "+
 "from top_50_products;");
@@ -112,7 +113,8 @@ productTurnPurple = stmt4.executeQuery(
 while(productGotIn50.next()){
   String productID = productGotIn50.getString("product_id");
   String new_amount = "0";
-  ResultSet rs_amount = stmt3.executeQuery("select sum(amount) "+
+  ResultSet rs_amount = 
+  stmt3.executeQuery("select round(cast(sum(amount) as numeric), 2) as sum "+
   "from state_product where product_id = "+productID+";");
 
   if(rs_amount.next())

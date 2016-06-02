@@ -207,7 +207,7 @@
         productId = rs_top50_products.getString("id");
         productList.add(productId);
         %>
-        <th id= <%=productId%> ><%=productName + " (" + productSpending + ")"%></th>
+        <th id= <%=productId%> class=<%=productId%>><%=productName + " (" + productSpending + ")"%></th>
         <% 
       }
     /* =============== Display Top-50 States Header ===================*/
@@ -233,7 +233,7 @@
             cellId = productId + "|" + stateId;
             
             if (salesAmount!= null && salesAmount.next()){ %>
-              <td id= <%=cellId%> ><%= "$ " + salesAmount.getString("amount") %></td>  
+              <td id= <%=cellId%> class=<%=productId%> ><%= "$ " + salesAmount.getString("amount") %></td>  
             <%}
             else {%>
               <td><%= "$ 0 "%></td>
