@@ -1,4 +1,3 @@
-
 var xmlHttp = new XMLHttpRequest();
 function refresh(){
   xmlHttp.onreadystatechange = stateChanged;

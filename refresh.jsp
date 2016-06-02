@@ -17,8 +17,16 @@
      conn = DriverManager.getConnection(url, admin, password);
   }
   catch (Exception e) {}
-  out.print("dddddd");
-  out.print("fdsfgdfssa");
+
+  Statement stmt = conn.createStatement();
+  Statement stmt2 = conn.createStatement();
+
+  ResultSet logEntry = stmt.executeQuery("select distinct product_id from logTable "+
+    "where product_id in (select product_id from top_50_products)");
+  while(logEntry.next()){
+    int product = logEntry.getInt("product_id");%>
+    <%=product%>
+  <%}
 %>
 
 <body>
