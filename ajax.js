@@ -7,8 +7,7 @@ function refresh(){
 }
 function stateChanged(){
   if (xmlHttp.readyState==4) {
-      var xmlDoc=xmlHttp.responseXML.documentElement;
-       document.getElementById("testing").innerHTML =
-       "success";
+    document.getElementById("SRkb4UaJKc").color = "#FF0000";
+     //$("th").css("background-color", "#FF0000");
   }
 }

@@ -35,10 +35,12 @@
 	ResultSet rs_top50_states = null;
 	PreparedStatement cell_amount = null;
 	String categoryOption = "";
-
+	String productName = "";
+	String stateName = "";
+	String cellName ="";
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
-	
+	out.print("sdsd");
 
 	int numOfOrders = 0;
 
@@ -191,12 +193,18 @@
     <%
     /* =============== Display Top-50 Products Header ===================*/
       ArrayList productList = new ArrayList(); 
+      ArrayList<String> productsName = new ArrayList();
+      ArrayList<String> statesName = new ArrayList();
+      
       while(rs_top50_products.next()){
         String productSpending = 
             ((rs_top50_products.getString("amount") == null) ? "0" : 
             rs_top50_products.getString("amount"));
+
+        productName = rs_top50_products.getString("name");
+        productsName.add(productName);
         %>
-        <th><%=rs_top50_products.getString("name") + " (" + productSpending + ")"%></th>
+        <th id= <%=productName%> ><%=productName + " (" + productSpending + ")"%></th>
         <%productList.add(rs_top50_products.getString("id"));   
       }
     /* =============== Display Top-50 States Header ===================*/
@@ -205,16 +213,24 @@
         <tr>
           <%String amount = 
             ((rs_top50_states.getString("amount") == null) ? "0" : 
-            rs_top50_states.getString("amount"));%>
-          <td><b><%=rs_top50_states.getString("name")+ " ("+
+            rs_top50_states.getString("amount"));
+
+            stateName = rs_top50_states.getString("name");
+            statesName.add(stateName);
+           %>
+          <td id= <%=stateName%> ><b><%=stateName + " ("+
             amount+")"%></b></td><%
      		/* =============== Display Top-50 States Header ===================*/
         for(int counter = 0; counter < productList.size(); counter++){
             cell_amount.setInt(1, Integer.valueOf((String)productList.get(counter)));
             cell_amount.setInt(2, Integer.valueOf(rs_top50_states.getString("id")));
             salesAmount = cell_amount.executeQuery();
+
+            productName = productsName.get(counter);
+            cellName = productName + stateName ;
+            
             if (salesAmount!= null && salesAmount.next()){ %>
-              <td><%= "$ " + salesAmount.getString("amount") %></td>  
+              <td id= <%=cellName%> ><%= "$ " + salesAmount.getString("amount") %></td>  
             <%}
             else {%>
               <td><%= "$ 0 "%></td>
