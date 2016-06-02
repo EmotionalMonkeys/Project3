@@ -1,14 +1,6 @@
 <%@ page contentType="text/xml" %><?xml version="1.0" encoding="UTF-8"?>
 <%@ page import="java.sql.*, javax.sql.*, javax.naming.*"%>
-<% response.setContentType("text/xml");%>
-<CD>
-  <TITLE>Empire Burlesque</TITLE>
-  <ARTIST>Bob Dylan</ARTIST>
-  <COUNTRY>USA</COUNTRY>
-  <COMPANY>Columbia</COMPANY>
-  <PRICE>10.90</PRICE>
-  <YEAR>1985</YEAR>
-</CD>
+
 <% 
 Connection conn = null;
 try {
@@ -35,9 +27,11 @@ while(turnRed.next()){
   String state = "s"+turnRed.getString("state_id");
   String cell = product +"|" +state;
 %>
-  <productTurnRed><%=product%></productTurnRed>
-  <stateTurnRed><%=state%></stateTurnRed>
-  <cellTurnRed><%=cell%></cellTurnRed>
+  <redTwo>
+	  <productTurnRed><%=product%></productTurnRed>
+	  <stateTurnRed><%=state%></stateTurnRed>
+	  <cellTurnRed><%=cell%></cellTurnRed>
+  </redTwo>
 <%}
 
 %>

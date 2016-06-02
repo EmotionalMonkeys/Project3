@@ -207,7 +207,7 @@
         productId = rs_top50_products.getString("id");
         productList.add(productId);
         %>
-        <th id= <%=productIdNew%> ><%=productName + " (" + productSpending + ")"%></th>
+        <th id= <%=productId%> ><%=productName + " (" + productSpending + ")"%></th>
         <% 
       }
     /* =============== Display Top-50 States Header ===================*/
