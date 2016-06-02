@@ -44,8 +44,8 @@ function refresh(){
 
         var y = document.getElementsByClassName(text.purple[i].productId);
 
-        for(var j in y){
-          j.style.backgroundColor = "purple";
+        for(var j = 0; j< y.length; j++){
+          y[j].style.backgroundColor = "purple";
         }
 
       }
