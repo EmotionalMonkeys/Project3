@@ -90,6 +90,7 @@
 		}
 		/* =========================== Run ============================== */
 		else if (action.equals("run")) {
+			stmt5.executeUpdate("delete from top_50_products");
 			ResultSet logEntry = stmt5.executeQuery("select * from logTable");
 
 			while(logEntry.next()){
@@ -187,8 +188,8 @@
     <%
     /* =============== Display Top-50 Products Header ===================*/ 
       while(rs_top50_products.next()){
-      	stmt5.executeUpdate("INSERT INTO top_50_products(product_id) values("+
-      	rs_top50_products.getString("id") +");");
+      	stmt5.executeUpdate("INSERT INTO top_50_products(product_id,amount) values("+
+      	rs_top50_products.getString("id")+","+rs_top50_products.getString("amount")+");");
         String productSpending = 
             ((rs_top50_products.getString("amount") == null) ? "0" : 
             rs_top50_products.getString("amount"));

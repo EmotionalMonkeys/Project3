@@ -21,12 +21,40 @@
   Statement stmt = conn.createStatement();
   Statement stmt2 = conn.createStatement();
 
-  ResultSet logEntry = stmt.executeQuery("select distinct product_id from logTable "+
+  //Top-50 products in table that are updated 
+  ResultSet productToChange = stmt.executeQuery("select distinct product_id from logTable "+
     "where product_id in (select product_id from top_50_products)");
-  while(logEntry.next()){
-    int product = logEntry.getInt("product_id");%>
-    <%=product%>
+  while(productToChange.next()){
+    int product = productToChange.getInt("product_id");%>
+    <product><name><%=product%></name></product>
   <%}
+  //Top-50 states in table that are updated 
+  ResultSet statesToChange = stmt.executeQuery("select distinct state_id from logTable;");
+  while(statesToChange.next()){
+    int state = statesToChange.getInt("state_id");%>
+    <state><name><%=state%></name></state>
+  <%}
+
+
+  ResultSet logEntry = stmt.executeQuery("select * from logTable");
+  while(logEntry.next()){
+        int state = logEntry.getInt("state_id");
+        int product = logEntry.getInt("product_id");
+        int amount = logEntry.getInt("amount");
+        
+        int result = 0;
+        result = stmt2.executeUpdate(
+          "update state_product set amount = amount + " + amount +
+          " where state_id = " + state + "and product_id = " + product +";"
+          );
+        if(result == 0){
+          stmt2.executeUpdate(
+            "insert into state_product(state_id,product_id,amount) values ("+
+            state+","+product+","+amount+");");
+        }
+      }
+
+  stmt.executeUpdate("delete from logTable");
 %>
 
 <body>

@@ -6,6 +6,9 @@ function refresh(){
 }
 function stateChanged(){
   if (xmlHttp.readyState==4) {
-      document.getElementById("testing").innerHTML = xmlHttp.responseText;
+    //var xmlDoc=xmlHttp.responseXML.documentElement;
+    //document.getElementById("testing").innerHTML =
+    //xmlDoc.getElementsByTagName("product")[0].nodeValue;
+    document.getElementById("testing").innerHTML = xmlHttp.responseText;
   }
 }
