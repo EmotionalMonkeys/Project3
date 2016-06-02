@@ -36,10 +36,12 @@
 	PreparedStatement cell_amount = null;
 	String categoryOption = "";
 	String productName = "";
+	String productId = "";
 	String stateName = "";
-	String cellName ="";
+	String stateId = "";
+	String cellId ="";
+
 	ArrayList productList = new ArrayList(); 
-    ArrayList<String> productsName = new ArrayList();
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
 
@@ -202,10 +204,11 @@
             rs_top50_products.getString("amount"));
 
         productName = rs_top50_products.getString("name");
-        productsName.add(productName);
+        productId = rs_top50_products.getString("id");
+        productList.add(productId);
         %>
-        <th id= <%=productName%> ><%=productName + " (" + productSpending + ")"%></th>
-        <%productList.add(rs_top50_products.getString("id"));   
+        <th id= <%=productIdNew%> ><%=productName + " (" + productSpending + ")"%></th>
+        <% 
       }
     /* =============== Display Top-50 States Header ===================*/
       ResultSet salesAmount = null;
@@ -216,8 +219,9 @@
             rs_top50_states.getString("amount"));
 
             stateName = rs_top50_states.getString("name");
+            stateId = "s"+rs_top50_states.getString("id");
            %>
-          <td id= <%=stateName%> ><b><%=stateName + " ("+
+          <td id= <%=stateId%> ><b><%=stateName + " ("+
             amount+")"%></b></td><%
      		/* =============== Display Top-50 States Header ===================*/
         for(int counter = 0; counter < productList.size(); counter++){
@@ -225,11 +229,11 @@
             cell_amount.setInt(2, Integer.valueOf(rs_top50_states.getString("id")));
             salesAmount = cell_amount.executeQuery();
 
-            productName = productsName.get(counter);
-            cellName = productName + stateName ;
+            productId = (String)productList.get(counter);
+            cellId = productId + "|" + stateId;
             
             if (salesAmount!= null && salesAmount.next()){ %>
-              <td id= <%=cellName%> ><%= "$ " + salesAmount.getString("amount") %></td>  
+              <td id= <%=cellId%> ><%= "$ " + salesAmount.getString("amount") %></td>  
             <%}
             else {%>
               <td><%= "$ 0 "%></td>
