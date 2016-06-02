@@ -38,9 +38,10 @@
 	String productName = "";
 	String stateName = "";
 	String cellName ="";
+	ArrayList productList = new ArrayList(); 
+    ArrayList<String> productsName = new ArrayList();
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
-	out.print("sdsd");
 
 	int numOfOrders = 0;
 
@@ -73,7 +74,7 @@
 			
 			stmt.executeQuery("SELECT proc_insert_orders(" + queries_num + "," + random_num + ")");
 			out.println("<script>alert('" + queries_num + " orders are inserted!');</script>");
-
+			/* =========================== Log Table ============================== */
 			ResultSet added_sale = 
 				stmt4.executeQuery(
 					"select state_id,product_id,round(cast(sum(o.price) as numeric),2) as amount "+ 
@@ -191,12 +192,10 @@
 	if(rs_top50_products != null && rs_top50_states != null && cell_amount != null){ %>
     <th>State | Product</th>
     <%
-    /* =============== Display Top-50 Products Header ===================*/
-      ArrayList productList = new ArrayList(); 
-      ArrayList<String> productsName = new ArrayList();
-      ArrayList<String> statesName = new ArrayList();
-      
+    /* =============== Display Top-50 Products Header ===================*/      
       while(rs_top50_products.next()){
+      	stmt5.executeUpdate("INSERT INTO top_50_products(product_id) values("+
+      	rs_top50_products.getString("id") +");");
         String productSpending = 
             ((rs_top50_products.getString("amount") == null) ? "0" : 
             rs_top50_products.getString("amount"));
@@ -216,7 +215,6 @@
             rs_top50_states.getString("amount"));
 
             stateName = rs_top50_states.getString("name");
-            statesName.add(stateName);
            %>
           <td id= <%=stateName%> ><b><%=stateName + " ("+
             amount+")"%></b></td><%
