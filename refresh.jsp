@@ -1,5 +1,5 @@
-<%@ page contentType="text/xml" %><?xml version="1.0" encoding="UTF-8"?>
-<%@ page import="java.sql.*, javax.sql.*, javax.naming.*"%>
+<%@ page contentType="text/html" import="java.sql.*, javax.sql.*, javax.naming.*" %>
+<%@ page import="java.util.*, org.json.JSONObject, org.json.JSONArray"%>
 
 <% 
 Connection conn = null;
@@ -17,26 +17,36 @@ Statement stmt2 = conn.createStatement();
 Statement stmt3 = conn.createStatement();
 Statement stmt4 = conn.createStatement();
 
+JSONObject change = new JSONObject();
+
+JSONArray red = new JSONArray();
+JSONObject redNode = new JSONObject();
+JSONArray message = new JSONArray();
+JSONObject messageNode = new JSONObject();
+
+JSONObject purpleNode = new JSONObject();
+JSONArray purple = new JSONArray();
+
+
+
 /*=============== Top-50 products in table that are updated ==============*/
 ResultSet turnRed = stmt.executeQuery("select state_id,product_id from logTable "+
-  "where product_id in (select product_id from top_50_products)");
-%>
-<Red> <%
+  "where product_id in (select product_id from top_50_products);");
+
 while(turnRed.next()){
   String product = turnRed.getString("product_id");
   String state = "s"+turnRed.getString("state_id");
   String cell = product +"|" +state;
-%>
-  <redTwo>
-	  <productTurnRed><%=product%></productTurnRed>
-	  <stateTurnRed><%=state%></stateTurnRed>
-	  <cellTurnRed><%=cell%></cellTurnRed>
-  </redTwo>
-<%}
 
-%>
-</Red>
-<%
+  //redNode.add(state);
+
+  redNode.put("product",product);
+  redNode.put("cell",cell);
+  red.put(redNode);
+
+}
+change.put("red",red);
+
 
 
 /* ===================== Push logTable to Precomputed  Table ===================== */
@@ -106,15 +116,26 @@ while(productGotIn50.next()){
   "from state_product where product_id = "+productID+";");
 
   if(rs_amount.next())
-    new_amount = rs_amount.getString("sum");%>
-  <productText><%=productID%></productText>
-  <amountText><%=new_amount%></amountText>
-<%}
+    new_amount = rs_amount.getString("sum");
+
+  messageNode.put("productID",productID);
+  messageNode.put("new_amount",new_amount);
+  message.put(messageNode);
+
+}
+change.put("message",message);
+
+
+
+
 while(productTurnPurple.next()){
   String productId = productTurnPurple.getString("product_id");
-  %>
-  <productTurnPurple><%=productId%></productTurnPurple>
-<%}
+  purpleNode.put("productId",productId);
+  purple.put(purpleNode);
+}
+change.put("purple",purple);
+
+out.print(change);
 
 
 stmt.executeUpdate("delete from logTable;");

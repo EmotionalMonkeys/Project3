@@ -1,26 +1,48 @@
 
-var xmlHttp = new XMLHttpRequest();
+
 function refresh(){
+	var xmlHttp = new XMLHttpRequest();
 
-  xmlHttp.onreadystatechange = stateChanged;
+  xmlHttp.onreadystatechange = function(){
+  	if (xmlHttp.readyState==4 && xmlHttp.status == 200) {
+	    var i,j;
+	    var x = xmlHttp.responseText;
+
+	    var text = JSON.parse(x);
+
+
+	    for(i = 0; i< text.red.length;i++){
+	    	//document.getElementById(text[0].).style.color = "red";
+
+	    	//document.getElementById(text[0].redNode[1]).style.color = "red";
+
+	    	//document.getElementById(text[0].redNode[2]);
+				document.getElementById(text.red[i].product).style.color =  "red";
+				document.getElementById(text.red[i].cell).style.color =  "red";
+
+	    }
+
+	    for(i = 0; i< text.message.length;i++){
+	    	//document.getElementById(text[0].).style.color = "red";
+
+	    	//document.getElementById(text[0].redNode[1]).style.color = "red";
+
+	    	//document.getElementById(text[0].redNode[2]);
+	    	document.getElementById("testing").innerHTML = "YEAH123";
+	    	document.getElementById("message").innerHTML = "YE" + text.message[i].productID;
+
+				//document.getElementById(text.message[i].productID).style.color =  "red";
+				//document.getElementById(text.message[i].new_amount).style.color =  "red";
+
+	    }
+
+
+
+
+	  }
+
+  };
   xmlHttp.open("GET","refresh.jsp",true);
-  xmlHttp.send();
+  xmlHttp.send(null);
 }
-function stateChanged(){
-  if (xmlHttp.readyState==4) {
-    var i;
-    var xmlDoc=xmlHttp.responseXML;
-    var productRed = xmlDoc.getElementsByTagName("redTwo");
-    for(i = 0; i < productRed.length;i++){
-      //((xmlDoc == null)?"NO":"YES");
-      document.getElementById(productRed[i].getElementsByTagName("productTurnRed")[0].childNode[0].nodeValue).style.color = "red";
-    }
-    document.getElementById("testing").innerHTML = productRed.length;
-    //document.getElementById("")
-    //var = xmlDoc.getElementsByTagName("product")[0].nodeValue;
-    //document.getElementById("testing").innerHTML = xmlHttp.responseText;
-    //document.getElementById("SRkb4UaJKc").color = "#FF0000";
-    //$("th").css("background-color", "#FF0000");
 
-  }
-}

@@ -170,7 +170,7 @@
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
 
-
+<div id="message"></div>
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
       <option value = "all">All</option>
