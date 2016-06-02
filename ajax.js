@@ -5,12 +5,18 @@ function refresh(){
 
   xmlHttp.onreadystatechange = function(){
   	if (xmlHttp.readyState==4 && xmlHttp.status == 200) {
-	    var i,j;
+	    var i,j,w;
 	    var x = xmlHttp.responseText;
 
 	    var text = JSON.parse(x);
+	    /*
+	    var white = document.getElementsByName("textC");
+	    for(w = 0; w< white.length;i++){
+	    	white[w].style.color = "black";
+	    }
+	    */
 
-
+			console.log(JSON.stringify(text));
 	    for(i = 0; i< text.red.length;i++){
 	    
 				document.getElementById(text.red[i].product).style.color =  "red";
@@ -32,8 +38,7 @@ function refresh(){
 
 	    	//document.getElementById(text[0].redNode[2]);
 	    	//document.getElementById("testing").innerHTML = "YEAH123";
-	    	txt +=
-        text.message[i].productID + "|" +text.message[i].new_amount + "<br>";
+	    	txt += text.message[i].productID + "|" +text.message[i].new_amount + "<br>";
 
 				//document.getElementById(text.message[i].productID).style.color =  "red";
 				//document.getElementById(text.message[i].new_amount).style.color =  "red";

@@ -22,15 +22,8 @@ Statement stmt6 = conn.createStatement();
 JSONObject change = new JSONObject();
 
 JSONArray red = new JSONArray();
-JSONObject redNode = new JSONObject();
-
 JSONArray redState = new JSONArray();
-JSONObject redStateNode = new JSONObject();
-
 JSONArray message = new JSONArray();
-JSONObject messageNode = new JSONObject();
-
-JSONObject purpleNode = new JSONObject();
 JSONArray purple = new JSONArray();
 
 
@@ -44,7 +37,7 @@ while(turnRed.next()){
   String state = "s"+turnRed.getString("state_id");
   String cell = product +"|" +state;
 
-  //redNode.add(state);
+	JSONObject redNode = new JSONObject();
 
   redNode.put("product",product);
   redNode.put("cell",cell);
@@ -61,6 +54,9 @@ turnRedState = stmt6.executeQuery("select state_id from logTable;");
 
 while(turnRedState.next()){
   String state_id = "s"+turnRedState.getString("state_id");
+
+  JSONObject redStateNode = new JSONObject();
+
   redStateNode.put("state_id",state_id);
   redState.put(redStateNode);
 
@@ -138,6 +134,7 @@ while(productGotIn50.next()){
   if(rs_amount.next())
     new_amount = rs_amount.getString("sum");
 
+  JSONObject messageNode = new JSONObject();
   messageNode.put("productID",productID);
   messageNode.put("new_amount",new_amount);
   message.put(messageNode);
@@ -150,6 +147,7 @@ change.put("message",message);
 
 while(productTurnPurple.next()){
   String productId = productTurnPurple.getString("product_id");
+	JSONObject purpleNode = new JSONObject();
   purpleNode.put("productId",productId);
   purple.put(purpleNode);
 }
@@ -161,4 +159,6 @@ out.print(change);
 stmt.executeUpdate("delete from logTable;");
   
 %>
+
+
 
