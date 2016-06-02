@@ -10,5 +10,8 @@ function stateChanged(){
     //document.getElementById("testing").innerHTML =
     //xmlDoc.getElementsByTagName("product")[0].nodeValue;
     document.getElementById("testing").innerHTML = xmlHttp.responseText;
+    document.getElementById("SRkb4UaJKc").color = "#FF0000";
+     //$("th").css("background-color", "#FF0000");
+
   }
 }

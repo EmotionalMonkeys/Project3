@@ -6,6 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="orders.css">
 <script language="javascript" src="ajax.js"></script> 
 <title>CSE135 Project</title>
 
@@ -34,7 +35,11 @@
 	ResultSet rs_top50_states = null;
 	PreparedStatement cell_amount = null;
 	String categoryOption = "";
-	ArrayList productList = new ArrayList();
+	String productName = "";
+	String stateName = "";
+	String cellName ="";
+	ArrayList productList = new ArrayList(); 
+    ArrayList<String> productsName = new ArrayList();
 	
 	ResultSet rs_categories = stmt2.executeQuery("select name from categories");
 
@@ -163,8 +168,6 @@
 	<input class="btn btn-primary"  type="submit" name="submit" value="insert"/>
 </form>
 
-<button onclick = "refresh()">Refresh</button>
-<p id = "testing"></p>
 
 <form action="orders.jsp" method="POST">
 	<select name = "category_option" >
@@ -182,19 +185,26 @@
 	<input class="btn btn-success"  type="submit" name="submit" value="run"/>
 </form>
 
+<p id="testing"></p>
+<button type="button" class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
+<button type="button" class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
+
 <table class="table table-striped"><%
 	if(rs_top50_products != null && rs_top50_states != null && cell_amount != null){ %>
     <th>State | Product</th>
     <%
-    /* =============== Display Top-50 Products Header ===================*/ 
+    /* =============== Display Top-50 Products Header ===================*/      
       while(rs_top50_products.next()){
       	stmt5.executeUpdate("INSERT INTO top_50_products(product_id,amount) values("+
       	rs_top50_products.getString("id")+","+rs_top50_products.getString("amount")+");");
         String productSpending = 
             ((rs_top50_products.getString("amount") == null) ? "0" : 
             rs_top50_products.getString("amount"));
+
+        productName = rs_top50_products.getString("name");
+        productsName.add(productName);
         %>
-        <th><%=rs_top50_products.getString("name") + " (" + productSpending + ")"%></th>
+        <th id= <%=productName%> ><%=productName + " (" + productSpending + ")"%></th>
         <%productList.add(rs_top50_products.getString("id"));   
       }
     /* =============== Display Top-50 States Header ===================*/
@@ -203,16 +213,23 @@
         <tr>
           <%String amount = 
             ((rs_top50_states.getString("amount") == null) ? "0" : 
-            rs_top50_states.getString("amount"));%>
-          <td><b><%=rs_top50_states.getString("name")+ " ("+
+            rs_top50_states.getString("amount"));
+
+            stateName = rs_top50_states.getString("name");
+           %>
+          <td id= <%=stateName%> ><b><%=stateName + " ("+
             amount+")"%></b></td><%
      		/* =============== Display Top-50 States Header ===================*/
         for(int counter = 0; counter < productList.size(); counter++){
             cell_amount.setInt(1, Integer.valueOf((String)productList.get(counter)));
             cell_amount.setInt(2, Integer.valueOf(rs_top50_states.getString("id")));
             salesAmount = cell_amount.executeQuery();
+
+            productName = productsName.get(counter);
+            cellName = productName + stateName ;
+            
             if (salesAmount!= null && salesAmount.next()){ %>
-              <td><%= "$ " + salesAmount.getString("amount") %></td>  
+              <td id= <%=cellName%> ><%= "$ " + salesAmount.getString("amount") %></td>  
             <%}
             else {%>
               <td><%= "$ 0 "%></td>
@@ -223,5 +240,7 @@
  %>
 </table>
 
+<button type="button" class="btn btn-success refresh" onclick = "refresh()">Refresh</button>
+<button type="button" class="btn btn-success endRefresh" onclick = "refresh()">Refresh</button>
 </body>
 </html>
