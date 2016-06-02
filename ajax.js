@@ -12,15 +12,18 @@ function refresh(){
 
 
 	    for(i = 0; i< text.red.length;i++){
-	    	//document.getElementById(text[0].).style.color = "red";
-
-	    	//document.getElementById(text[0].redNode[1]).style.color = "red";
-
-	    	//document.getElementById(text[0].redNode[2]);
+	    
 				document.getElementById(text.red[i].product).style.color =  "red";
 				document.getElementById(text.red[i].cell).style.color =  "red";
 
 	    }
+	    for(i = 0; i< text.redState.length;i++){
+	    
+				document.getElementById(text.redState[i].state_id).style.color =  "red";
+				
+	    }
+
+
       var txt = "";
 	    for(i = 0; i< text.message.length;i++){
 	    	//document.getElementById(text[0].).style.color = "red";

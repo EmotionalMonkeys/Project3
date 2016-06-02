@@ -17,11 +17,16 @@ Statement stmt2 = conn.createStatement();
 Statement stmt3 = conn.createStatement();
 Statement stmt4 = conn.createStatement();
 Statement stmt5 = conn.createStatement();
+Statement stmt6 = conn.createStatement();
 
 JSONObject change = new JSONObject();
 
 JSONArray red = new JSONArray();
 JSONObject redNode = new JSONObject();
+
+JSONArray redState = new JSONArray();
+JSONObject redStateNode = new JSONObject();
+
 JSONArray message = new JSONArray();
 JSONObject messageNode = new JSONObject();
 
@@ -46,8 +51,21 @@ while(turnRed.next()){
   red.put(redNode);
 
 }
+
 change.put("red",red);
 
+
+ResultSet turnRedState = null;
+
+turnRedState = stmt6.executeQuery("select state_id from logTable;");
+
+while(turnRedState.next()){
+  String state_id = "s"+turnRedState.getString("state_id");
+  redStateNode.put("state_id",state_id);
+  redState.put(redStateNode);
+
+}
+change.put("redState",redState);
 
 
 /* ===================== Push logTable to Precomputed  Table ===================== */
