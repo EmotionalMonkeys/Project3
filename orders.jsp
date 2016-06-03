@@ -126,7 +126,7 @@
 				"from state_product " +
 				"group by product_id " +
 				"order by amount DESC limit 50)u join " +
-				"products p on u.product_id = p.id order by u.amount;");
+				"products p on u.product_id = p.id order by u.amount DESC;");
 			}
 			else{
 				rs_top50_products = stmt3.executeQuery(
@@ -138,7 +138,7 @@
 				"\'" +categoryOption + "\'"+ ")) "+
 				"group by product_id " +
 				"order by amount DESC limit 50) u join " +
-				"products p on u.product_id = p.id order by u.amount;");
+				"products p on u.product_id = p.id order by u.amount DESC;");
 			}
 
 			rs_top50_states = stmt.executeQuery(

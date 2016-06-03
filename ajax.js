@@ -1,5 +1,3 @@
-
-
 function refresh(){
 	var xmlHttp = new XMLHttpRequest();
 
@@ -21,28 +19,44 @@ function refresh(){
         prevRed[r].setAttribute("name","textC");
       }  
 
+      console.log(JSON.stringify(text));
 			//console.log(JSON.stringify(text));
 	    for(i = 0; i< text.red.length;i++){
 	      console.log("PRODUCT");
+
 				document.getElementById(text.red[i].product).style.color =  "red";
+
+				document.getElementById(text.red[i].product).innerHTML =  
+					(text.red[i].name +" (" + text.red[i].amount + ")");
 				document.getElementById(text.red[i].cell).style.color =  "red";
 
         document.getElementById(text.red[i].product).setAttribute("name","changed");
         document.getElementById(text.red[i].cell).setAttribute("name","changed");
 
 	    }
+
+	    //display state changes 
 	    for(i = 0; i< text.redState.length;i++){
 	      console.log("STATE");
 				document.getElementById(text.redState[i].state_id).style.color =  "red";
         document.getElementById(text.redState[i].state_id).setAttribute("name","changed");
 				
+				document.getElementById(text.redState[i].state_id).innerHTML =  
+					(text.redState[i].stateName + " (" + text.redState[i].stateAmount + ")");
 	    }
 
       /* =========================== TEXT ============================ */  
       var txt = "";
+      if(text.message.length!= 0){
+      	txt += "You need to <Strong> refresh </Strong> to update the current Top 50 Products </br><hr>";
+      }
 	    for(i = 0; i< text.message.length;i++){
-	    	txt += text.message[i].productID + "|" +text.message[i].new_amount + "<br>";
+
+	    	txt += "Product: <b>\'" + text.message[i].productName + "\'</b> with amount of <b> $ " +
+	    	        text.message[i].new_amount + " </b>becomes New Top 50 Products</br>";
+
 	    }
+
       document.getElementById("message").innerHTML = txt;
 
       /* =========================== PURPLE ============================ */
