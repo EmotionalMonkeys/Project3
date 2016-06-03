@@ -10,19 +10,16 @@ function refresh(){
 	    /* =========================== RED ============================ */    
 	    var prevRed = document.getElementsByName("changed");
 	    for(r = 0; r< prevRed.length;r++){
-        console.log("change");
+       
 	    	prevRed[r].style.color = "black";
-        //prevRed[r].setAttribute("name","textC");
 	    }  
       for(r = 0; r< prevRed.length;r++){
-        console.log("22222");
+        
         prevRed[r].setAttribute("name","textC");
       }  
 
-      console.log(JSON.stringify(text));
-			//console.log(JSON.stringify(text));
 	    for(i = 0; i< text.red.length;i++){
-	      console.log("PRODUCT");
+	     
 
 				document.getElementById(text.red[i].product).style.color =  "red";
 
@@ -37,7 +34,7 @@ function refresh(){
 
 	    //display state changes 
 	    for(i = 0; i< text.redState.length;i++){
-	      console.log("STATE");
+	      
 				document.getElementById(text.redState[i].state_id).style.color =  "red";
         document.getElementById(text.redState[i].state_id).setAttribute("name","changed");
 				
@@ -47,6 +44,7 @@ function refresh(){
 
       /* =========================== TEXT ============================ */  
       var txt = "";
+      document.getElementById("message").innerHTML = "";
       if(text.message.length!= 0){
       	txt += "You need to <Strong> refresh </Strong> to update the current Top 50 Products </br><hr>";
       }
@@ -61,17 +59,17 @@ function refresh(){
 
       /* =========================== PURPLE ============================ */
       var prevPurple = document.getElementsByClassName("purpleColumn");
-
-      //for(r = 0; r< prevPurple.length;r++){
-        //console.log("purple");
-        //prevPurple[r].style.backgroundColor = "white";
-      //}  
-
+     
       for(r = 0; r< prevPurple.length;r++){
-        console.log("444444");
-        //var originClassName = document.getElementById(prevPurple[r]).getAtrribute("id");
-        //document.getElementById(prevPurple[r]).className = originClassName;
-        //document.getElementsByClassName(originClassName).style.backgroundColor="red";;
+        var t = prevPurple[r].id;
+       
+        prevPurple[r].className = t;
+        var temp = document.getElementsByClassName(t);
+        
+        for(i = 0; i< temp.length;i++){
+          temp[i].style.backgroundColor="transparent";
+        }
+        
       }  
 
       for(i = 0; i< text.purple.length;i++){
@@ -80,9 +78,10 @@ function refresh(){
 
         for(var j = 0; j < y.length; j++){
           y[j].style.backgroundColor = "purple";
-
-          if(y[j].id == y[j].className){
+          if(y[j].className == y[j].getAttribute("id")){
+            
             y[j].className = "purpleColumn";
+            y[j].style.backgroundColor = "purple";
           }
         }
 
