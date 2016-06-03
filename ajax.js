@@ -1,5 +1,3 @@
-
-
 function refresh(){
 	var xmlHttp = new XMLHttpRequest();
 
@@ -15,33 +13,18 @@ function refresh(){
 	    	white[w].style.color = "black";
 	    }
 	    */
-
 			console.log(JSON.stringify(text));
 	    for(i = 0; i< text.red.length;i++){
-	    
 				document.getElementById(text.red[i].product).style.color =  "red";
 				document.getElementById(text.red[i].cell).style.color =  "red";
 
 	    }
 	    for(i = 0; i< text.redState.length;i++){
-	    
 				document.getElementById(text.redState[i].state_id).style.color =  "red";
-				
 	    }
-
-
       var txt = "";
 	    for(i = 0; i< text.message.length;i++){
-	    	//document.getElementById(text[0].).style.color = "red";
-
-	    	//document.getElementById(text[0].redNode[1]).style.color = "red";
-
-	    	//document.getElementById(text[0].redNode[2]);
-	    	//document.getElementById("testing").innerHTML = "YEAH123";
 	    	txt += text.message[i].productID + "|" +text.message[i].new_amount + "<br>";
-
-				//document.getElementById(text.message[i].productID).style.color =  "red";
-				//document.getElementById(text.message[i].new_amount).style.color =  "red";
 
 	    }
       document.getElementById("message").innerHTML = txt;
@@ -57,9 +40,6 @@ function refresh(){
         }
 
       }
-
-
-
 	  }
 
   };
